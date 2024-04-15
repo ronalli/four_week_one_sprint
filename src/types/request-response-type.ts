@@ -2,7 +2,7 @@ export type ParamType = {
     id: string
 }
 
-enum sortValue {
+export enum sortValue {
     asc,
     desc
 }
@@ -21,8 +21,8 @@ export type BodyTypeBlog = {
 }
 
 export type QueryType = {
-   pageNumber?: number,
+    pageNumber?: number,
     pageSize?: number,
     sortBy?: string,
-    sortOrder?: sortValue
+    sortDirection?: "desc" | "asc",
 }

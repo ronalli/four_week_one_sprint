@@ -1,4 +1,4 @@
-import {BodyTypeBlog, QueryType} from "../types/request-response-type";
+import {BodyTypeBlog, QueryType, sortValue} from "../types/request-response-type";
 import {blogCollection, postCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
 import {formatingDataForOutputBlog} from "../utils/fromatingData";
@@ -86,14 +86,19 @@ export const blogsMongoRepositories = {
             return;
         }
     },
-    searchAndSortPosts: async (id: string, queryParams: QueryType) => {
-
+    searchAndSortPosts: async (blogId: string, queryParams: QueryType) => {
         const filter = {
-            id,
+            blogId,
         }
 
         try {
-            const allPosts = await postCollection.find({blogId: id}).toArray();
+            const allPosts = await postCollection
+                .find(filter)
+                .sort(queryParams.sortBy as string, queryParams.sortDirection)
+                .skip((queryParams.pageNumber-1)*queryParams.pageSize)
+                .limit(queryParams.pageSize)
+                .toArray();
+
             console.log(allPosts)
 
         } catch (e) {
