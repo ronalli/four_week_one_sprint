@@ -7,3 +7,11 @@ export type PostOutputType = {
     blogName: string,
     createdAt: string,
 }
+
+export type PaginatorPost = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: PostOutputType[]
+}

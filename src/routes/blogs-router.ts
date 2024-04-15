@@ -12,9 +12,4 @@ blogsRouter.post('/', authMiddleware, ...validationCreateBlog, inputCheckErrorsM
 blogsRouter.put('/:id', authMiddleware, ...validationCreateBlog, inputCheckErrorsMiddleware, blogsControllers.updateBlog)
 blogsRouter.delete('/:id', authMiddleware, blogsControllers.deleteBlog)
 
-blogsRouter.get('/:id/posts',
-    (req, res, next) => {
-        console.log(req.params.id)
-        console.log(req.query)
-        res.send('Hello!')
-    })
+blogsRouter.get('/:id/posts', blogsControllers.getAllPostsForBlog)

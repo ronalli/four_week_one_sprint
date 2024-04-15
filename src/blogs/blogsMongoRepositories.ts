@@ -1,7 +1,9 @@
-import {BodyTypeBlog} from "../types/request-response-type";
-import {blogCollection} from "../db/mongo-db";
+import {BodyTypeBlog, QueryType} from "../types/request-response-type";
+import {blogCollection, postCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
-import { formatingDataForOutputBlog} from "../utils/fromatingData";
+import {formatingDataForOutputBlog} from "../utils/fromatingData";
+import {postsControllers} from "../posts/postsControllers";
+import {postsMongoRepositories} from "../posts/postsMongoRepositories";
 
 export const blogsMongoRepositories = {
     createBlog: async (blog: BodyTypeBlog) => {
@@ -13,7 +15,7 @@ export const blogsMongoRepositories = {
         try {
             const insertedBlog = await blogCollection.insertOne(newBlog);
             const foundBlog = await blogCollection.findOne({_id: insertedBlog.insertedId})
-            if(foundBlog) {
+            if (foundBlog) {
                 return formatingDataForOutputBlog(foundBlog)
             }
             return;
@@ -25,7 +27,7 @@ export const blogsMongoRepositories = {
     findBlogById: async (id: string) => {
         try {
             const foundBlog = await blogCollection.findOne({_id: new ObjectId(id)});
-            if(foundBlog) {
+            if (foundBlog) {
                 return formatingDataForOutputBlog(foundBlog);
             }
             return;
@@ -38,8 +40,10 @@ export const blogsMongoRepositories = {
     findAllBlogs: async () => {
         try {
             const foundedBlogs = await blogCollection.find({}).toArray()
-            if(foundedBlogs.length > 0) {
-                return foundedBlogs.map(blog => {return formatingDataForOutputBlog(blog)})
+            if (foundedBlogs.length > 0) {
+                return foundedBlogs.map(blog => {
+                    return formatingDataForOutputBlog(blog)
+                })
             }
             return;
         } catch (e) {
@@ -81,5 +85,22 @@ export const blogsMongoRepositories = {
             console.log(e)
             return;
         }
+    },
+    searchAndSortPosts: async (id: string, queryParams: QueryType) => {
+
+        const filter = {
+            id,
+        }
+
+        try {
+            const allPosts = await postCollection.find({blogId: id}).toArray();
+            console.log(allPosts)
+
+        } catch (e) {
+            console.log("1", e)
+        }
+
+        return true;
+
     }
 }

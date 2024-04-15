@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {HTTP_STATUSES} from "../settings";
 // import {blogsRepositories} from "./blogsRepositories";
 import {BlogDBType} from "../db/blog-types-db";
-import {BodyTypeBlog, ParamType} from "../types/request-response-type";
+import {BodyTypeBlog, ParamType, QueryType} from "../types/request-response-type";
 import {blogsMongoRepositories} from "./blogsMongoRepositories";
 
 export const blogsControllers = {
@@ -51,4 +51,12 @@ export const blogsControllers = {
         res.status(HTTP_STATUSES.NOT_FOUND_404).send({})
         return
     },
+    getAllPostsForBlog: async (req: Request, res: Response) => {
+        const {id} = req.params;
+        const queryParams: QueryType = req.query;
+
+        const result = await blogsMongoRepositories.searchAndSortPosts(id, queryParams)
+
+        res.send({})
+    }
 }
