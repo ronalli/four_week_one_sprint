@@ -1,4 +1,5 @@
-import {body, validationResult} from 'express-validator'
+import {body, query, param} from 'express-validator'
+import {BlogOutputType} from "../types/output-blog-type";
 
 const validationTitle = body('name').trim().notEmpty().withMessage('Field name is empty').isLength({
     max: 15
@@ -15,7 +16,15 @@ const validationWebsiteUrl = body('websiteUrl').trim().notEmpty().withMessage('F
     return regexp.test(value);
 }).withMessage('Field is not correct url');
 
+const validatorQuery = query('sortBy').custom(value => {
+    const Query: Array<keyof BlogOutputType> = ["createdAt", "description", "id", "isMembership", "name", "websiteUrl"]
+    return Query.includes(value);
+}).withMessage('Field sortBy incorrect')
+
+
 
 export const validationCreateBlog = [validationTitle, validatorDescription, validationWebsiteUrl];
+
+export const validationQueryParams = [validatorQuery]
 
 

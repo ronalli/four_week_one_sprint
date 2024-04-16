@@ -1,10 +1,7 @@
-import {BodyTypeBlog, QueryType} from "../types/request-response-type";
-import {blogCollection, postCollection} from "../db/mongo-db";
+import {BodyTypeBlog} from "../types/request-response-type";
+import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
-import {formatingDataForOutputBlog, formatingDataForOutputPost} from "../utils/fromatingData";
-import {postsControllers} from "../posts/postsControllers";
-import {postsMongoRepositories} from "../posts/postsMongoRepositories";
-import {createDefaultValues} from "../utils/helper";
+import {formatingDataForOutputBlog} from "../utils/fromatingData";
 
 export const blogsMongoRepositories = {
     createBlog: async (blog: BodyTypeBlog) => {
@@ -38,20 +35,20 @@ export const blogsMongoRepositories = {
         }
 
     },
-    findAllBlogs: async () => {
-        try {
-            const foundedBlogs = await blogCollection.find({}).toArray()
-            if (foundedBlogs.length > 0) {
-                return foundedBlogs.map(blog => {
-                    return formatingDataForOutputBlog(blog)
-                })
-            }
-            return;
-        } catch (e) {
-            console.log(e)
-            return;
-        }
-    },
+    // findAllBlogs: async () => {
+    //     try {
+    //         const foundedBlogs = await blogCollection.find({}).toArray()
+    //         if (foundedBlogs.length > 0) {
+    //             return foundedBlogs.map(blog => {
+    //                 return formatingDataForOutputBlog(blog)
+    //             })
+    //         }
+    //         return;
+    //     } catch (e) {
+    //         console.log(e)
+    //         return;
+    //     }
+    // },
     updateBlog: async (id: string, inputUpdateDataBlog: BodyTypeBlog) => {
         const {name, websiteUrl, description} = inputUpdateDataBlog
         try {

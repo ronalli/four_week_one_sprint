@@ -18,20 +18,20 @@ export const postsMongoRepositories = {
             return;
         }
     },
-    findAllPosts: async () => {
-        try {
-            const foundPosts = await postCollection.find({}).toArray();
-            if (foundPosts.length > 0) {
-                return foundPosts.map(post => {
-                    return formatingDataForOutputPost(post)
-                });
-            }
-            return;
-        } catch (e) {
-            return;
-        }
-
-    },
+    // findAllPosts: async () => {
+    //     try {
+    //         const foundPosts = await postCollection.find({}).toArray();
+    //         if (foundPosts.length > 0) {
+    //             return foundPosts.map(post => {
+    //                 return formatingDataForOutputPost(post)
+    //             });
+    //         }
+    //         return;
+    //     } catch (e) {
+    //         return;
+    //     }
+    //
+    // },
     createPost: async (post: BodyTypePost) => {
         const findBlog = await blogsMongoRepositories.findBlogById(post.blogId);
         let newPost: PostDBType;

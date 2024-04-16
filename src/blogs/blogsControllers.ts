@@ -1,11 +1,10 @@
 import {Request, Response} from "express";
-
 import {HTTP_STATUSES} from "../settings";
-// import {blogsRepositories} from "./blogsRepositories";
-import {BlogDBType} from "../db/blog-types-db";
-import {BodyTypeBlog, ParamType, QueryType} from "../types/request-response-type";
+import {BodyTypeBlog, BodyTypePost, ParamType, QueryType} from "../types/request-response-type";
 import {blogsMongoRepositories} from "./blogsMongoRepositories";
-import {queryRepositories} from "../posts/queryRepositories";
+import {blogsQueryRepositories} from "./blogsQueryRepositories";
+import {postsMongoRepositories} from "../posts/postsMongoRepositories";
+import {postsQueryRepositories} from "../posts/postsQueryRepositories";
 
 export const blogsControllers = {
     createBlog: async (req: Request, res: Response) => {
@@ -28,7 +27,7 @@ export const blogsControllers = {
     },
     getBlogs: async (req: Request, res: Response) => {
         const queryParams: QueryType = req.query;
-        const findBlogs = await queryRepositories.getAllBlogs(queryParams);
+        const findBlogs = await blogsQueryRepositories.getAllBlogs(queryParams);
         return res.status(HTTP_STATUSES.OK_200).send(findBlogs)
     },
     updateBlog: async (req: Request, res: Response) => {
@@ -54,8 +53,28 @@ export const blogsControllers = {
         const {id} = req.params;
         const queryParams: QueryType = req.query;
 
-        const result = await queryRepositories.getAndSortPosts(id, queryParams)
+        const result = await blogsQueryRepositories. getAndSortPostsSpecialBlog(id, queryParams)
 
         res.send(result)
+    },
+    createPostForSpecialBlog: async (req: Request, res: Response) => {
+        const inputDataPost = req.body;
+        const {id} = req.params as ParamType;
+
+        const post = {
+            blogId: id,
+            ...inputDataPost
+        }
+
+        const createdPost = await postsMongoRepositories.createPost(post);
+
+        console.log(createdPost)
+
+        if (!createdPost) {
+            res.status(HTTP_STATUSES.BED_REQUEST_400).send({})
+            return
+        }
+        res.status(HTTP_STATUSES.CREATED_201).send(createdPost)
+        return;
     }
 }

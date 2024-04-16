@@ -4,9 +4,9 @@ import {blogCollection, postCollection} from "../db/mongo-db";
 import {formatingDataForOutputBlog, formatingDataForOutputPost} from "../utils/fromatingData";
 
 
-export const queryRepositories = {
+export const blogsQueryRepositories = {
 
-    getAndSortPosts: async (blogId: string, queryParams: QueryType) => {
+    getAndSortPostsSpecialBlog: async (blogId: string, queryParams: QueryType) => {
 
         const query = createDefaultValues(queryParams);
 

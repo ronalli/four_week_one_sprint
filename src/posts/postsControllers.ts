@@ -1,10 +1,9 @@
 import {Request, Response} from 'express'
 import {HTTP_STATUSES} from "../settings";
-import {PostDBType} from "../db/post-types-db";
-// import {postsRepositories} from "./postsRepositories";
-import {BodyTypePost, ParamType} from "../types/request-response-type";
+
+import {BodyTypePost, ParamType, QueryType} from "../types/request-response-type";
 import {postsMongoRepositories} from "./postsMongoRepositories";
-import {blogsMongoRepositories} from "../blogs/blogsMongoRepositories";
+import {postsQueryRepositories} from "./postsQueryRepositories";
 
 export const postsControllers = {
     createPost: async (req: Request, res: Response) => {
@@ -28,7 +27,8 @@ export const postsControllers = {
         return
     },
     getPosts: async (req: Request, res: Response) => {
-        const findPosts = await postsMongoRepositories.findAllPosts();
+        const queryParams: QueryType = req.query;
+        const findPosts = await postsQueryRepositories.getAllPosts(queryParams)
         res.status(HTTP_STATUSES.OK_200).send(findPosts)
     },
     updatePost: async (req: Request, res: Response) => {
