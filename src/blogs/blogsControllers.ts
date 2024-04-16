@@ -68,8 +68,6 @@ export const blogsControllers = {
 
         const createdPost = await postsMongoRepositories.createPost(post);
 
-        console.log(createdPost)
-
         if (!createdPost) {
             res.status(HTTP_STATUSES.BED_REQUEST_400).send({})
             return

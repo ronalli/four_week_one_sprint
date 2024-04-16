@@ -5,8 +5,8 @@ export type ParamType = {
 }
 
 export enum sortDirection {
-    asc,
-    desc
+    asc = 'asc',
+    desc = 'desc'
 }
 
 export type BodyTypePost = {
