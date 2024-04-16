@@ -1,8 +1,10 @@
+import {Sort, SortDirection} from "mongodb";
+
 export type ParamType = {
     id: string
 }
 
-export enum sortValue {
+export enum sortDirection {
     asc,
     desc
 }
@@ -24,5 +26,6 @@ export type QueryType = {
     pageNumber?: number,
     pageSize?: number,
     sortBy?: string,
-    sortDirection?: "desc" | "asc",
+    sortDirection?: SortDirection,
+    searchNameTerm?: string
 }

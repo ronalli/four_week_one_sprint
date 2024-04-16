@@ -57,6 +57,6 @@ export const blogsControllers = {
 
         const result = await blogsMongoRepositories.searchAndSortPosts(id, queryParams)
 
-        res.send({})
+        res.send(result)
     }
 }

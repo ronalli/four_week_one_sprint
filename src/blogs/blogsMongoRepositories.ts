@@ -1,9 +1,10 @@
-import {BodyTypeBlog, QueryType, sortValue} from "../types/request-response-type";
+import {BodyTypeBlog, QueryType} from "../types/request-response-type";
 import {blogCollection, postCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
-import {formatingDataForOutputBlog} from "../utils/fromatingData";
+import {formatingDataForOutputBlog, formatingDataForOutputPost} from "../utils/fromatingData";
 import {postsControllers} from "../posts/postsControllers";
 import {postsMongoRepositories} from "../posts/postsMongoRepositories";
+import {createDefaultValues} from "../utils/helper";
 
 export const blogsMongoRepositories = {
     createBlog: async (blog: BodyTypeBlog) => {
@@ -87,19 +88,35 @@ export const blogsMongoRepositories = {
         }
     },
     searchAndSortPosts: async (blogId: string, queryParams: QueryType) => {
+
+        const query = createDefaultValues(queryParams);
+
+        const search = query.searchNameTerm ? {title: {$regex: query.searchNameTerm, $options: "i" }} : {}
+
         const filter = {
             blogId,
+            ...search
         }
 
         try {
             const allPosts = await postCollection
                 .find(filter)
-                .sort(queryParams.sortBy as string, queryParams.sortDirection)
-                .skip((queryParams.pageNumber-1)*queryParams.pageSize)
-                .limit(queryParams.pageSize)
+                .sort(query.sortBy, query.sortDirection)
+                .skip((query.pageNumber-1)*query.pageSize)
+                .limit(query.pageSize)
                 .toArray();
 
-            console.log(allPosts)
+
+            const totalCount = await postCollection.countDocuments(filter);
+
+            return  {
+                pagesCount: Math.ceil(totalCount / query.pageSize),
+                page: query.pageNumber,
+                pageSize: query.pageSize,
+                totalCount,
+                items: allPosts.map(x => formatingDataForOutputPost(x))
+            }
+
 
         } catch (e) {
             console.log("1", e)
