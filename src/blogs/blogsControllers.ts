@@ -4,7 +4,6 @@ import {BodyTypeBlog, BodyTypePost, ParamType, QueryType} from "../types/request
 import {blogsMongoRepositories} from "./blogsMongoRepositories";
 import {blogsQueryRepositories} from "./blogsQueryRepositories";
 import {postsMongoRepositories} from "../posts/postsMongoRepositories";
-import {postsQueryRepositories} from "../posts/postsQueryRepositories";
 
 export const blogsControllers = {
     createBlog: async (req: Request, res: Response) => {
@@ -57,6 +56,7 @@ export const blogsControllers = {
 
         res.send(result)
     },
+
     createPostForSpecialBlog: async (req: Request, res: Response) => {
         const inputDataPost = req.body;
         const {id} = req.params as ParamType;

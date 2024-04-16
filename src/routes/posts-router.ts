@@ -3,7 +3,7 @@ import {postsControllers} from "../posts/postsControllers";
 import {validationCreatePost} from "../middleware/input-validation-post-middleware";
 import {authMiddleware} from "../middleware/auth-middleware";
 import {inputCheckErrorsMiddleware} from "../middleware/inputCheckErrorsMiddleware";
-import { validationQueryParamsPosts} from "../middleware/input-validation-blog-middleware";
+import {validationQueryParamsPosts} from "../middleware/query-validator-middleware";
 export const postsRouter = Router({});
 
 postsRouter.get('/', ...validationQueryParamsPosts, inputCheckErrorsMiddleware, postsControllers.getPosts)

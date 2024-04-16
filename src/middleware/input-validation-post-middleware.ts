@@ -26,3 +26,5 @@ const validationBlogId = body('blogId').trim().notEmpty().withMessage('Field blo
         })
 
 export const validationCreatePost = [validationBlogId, validationTitle, validationShortDescription, validationContent];
+
+export const validationCreateSpecialPost = [validationTitle, validationShortDescription, validationContent];

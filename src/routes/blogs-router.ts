@@ -2,10 +2,12 @@ import {Router} from 'express';
 import {blogsControllers} from "../blogs/blogsControllers";
 import {
     validationCreateBlog,
-    validationQueryParamsBlogs
 } from "../middleware/input-validation-blog-middleware";
 import {authMiddleware} from "../middleware/auth-middleware";
 import {inputCheckErrorsMiddleware} from "../middleware/inputCheckErrorsMiddleware";
+import {validationQueryParamsBlogs} from "../middleware/query-validator-middleware";
+import {validatorParamBlogId} from "../middleware/params-validator-middleware";
+import {validationCreateSpecialPost} from "../middleware/input-validation-post-middleware";
 
 export const blogsRouter = Router({});
 
@@ -15,6 +17,6 @@ blogsRouter.post('/', authMiddleware, ...validationCreateBlog, inputCheckErrorsM
 blogsRouter.put('/:id', authMiddleware, ...validationCreateBlog, inputCheckErrorsMiddleware, blogsControllers.updateBlog)
 blogsRouter.delete('/:id', authMiddleware, blogsControllers.deleteBlog)
 
-blogsRouter.get('/:id/posts', ...validationQueryParamsBlogs, inputCheckErrorsMiddleware, blogsControllers.getAllPostsForBlog)
+blogsRouter.get('/:id/posts', validatorParamBlogId, ...validationQueryParamsBlogs, inputCheckErrorsMiddleware, blogsControllers.getAllPostsForBlog)
 
-blogsRouter.post('/:id/posts', authMiddleware, blogsControllers.createPostForSpecialBlog)
+blogsRouter.post('/:id/posts', authMiddleware, ...validationCreateSpecialPost , inputCheckErrorsMiddleware, blogsControllers.createPostForSpecialBlog)
