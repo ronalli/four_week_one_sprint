@@ -5,6 +5,7 @@ import {HTTP_STATUSES} from "../settings";
 import {BlogDBType} from "../db/blog-types-db";
 import {BodyTypeBlog, ParamType, QueryType} from "../types/request-response-type";
 import {blogsMongoRepositories} from "./blogsMongoRepositories";
+import {queryRepositories} from "../posts/queryRepositories";
 
 export const blogsControllers = {
     createBlog: async (req: Request, res: Response) => {
@@ -26,20 +27,18 @@ export const blogsControllers = {
         res.status(HTTP_STATUSES.NOT_FOUND_404).send({})
     },
     getBlogs: async (req: Request, res: Response) => {
-        const findBlogs = await blogsMongoRepositories.findAllBlogs();
-        res.status(HTTP_STATUSES.OK_200).send(findBlogs)
-        return
+        const queryParams: QueryType = req.query;
+        const findBlogs = await queryRepositories.getAllBlogs(queryParams);
+        return res.status(HTTP_STATUSES.OK_200).send(findBlogs)
     },
     updateBlog: async (req: Request, res: Response) => {
         const {id} = req.params;
         const inputUpdateDataBlog = req.body as BodyTypeBlog;
         const flag = await blogsMongoRepositories.updateBlog(id, inputUpdateDataBlog)
         if(flag) {
-            res.status(HTTP_STATUSES.NO_CONTENT_204).send({})
-            return
+            return res.status(HTTP_STATUSES.NO_CONTENT_204).send({})
         }
-        res.status(HTTP_STATUSES.NOT_FOUND_404).send({})
-        return;
+        return res.status(HTTP_STATUSES.NOT_FOUND_404).send({})
     },
     deleteBlog: async (req: Request, res: Response) => {
         const {id} = req.params;
@@ -55,7 +54,7 @@ export const blogsControllers = {
         const {id} = req.params;
         const queryParams: QueryType = req.query;
 
-        const result = await blogsMongoRepositories.searchAndSortPosts(id, queryParams)
+        const result = await queryRepositories.getAndSortPosts(id, queryParams)
 
         res.send(result)
     }

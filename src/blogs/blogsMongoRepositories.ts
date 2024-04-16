@@ -87,42 +87,4 @@ export const blogsMongoRepositories = {
             return;
         }
     },
-    searchAndSortPosts: async (blogId: string, queryParams: QueryType) => {
-
-        const query = createDefaultValues(queryParams);
-
-        const search = query.searchNameTerm ? {title: {$regex: query.searchNameTerm, $options: "i" }} : {}
-
-        const filter = {
-            blogId,
-            ...search
-        }
-
-        try {
-            const allPosts = await postCollection
-                .find(filter)
-                .sort(query.sortBy, query.sortDirection)
-                .skip((query.pageNumber-1)*query.pageSize)
-                .limit(query.pageSize)
-                .toArray();
-
-
-            const totalCount = await postCollection.countDocuments(filter);
-
-            return  {
-                pagesCount: Math.ceil(totalCount / query.pageSize),
-                page: query.pageNumber,
-                pageSize: query.pageSize,
-                totalCount,
-                items: allPosts.map(x => formatingDataForOutputPost(x))
-            }
-
-
-        } catch (e) {
-            console.log("1", e)
-        }
-
-        return true;
-
-    }
 }
