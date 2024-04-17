@@ -79,9 +79,11 @@ describe('/blogs', () => {
     it('should get correct blog', async () => {
         const foundBlogs = await req.get(SETTINGS.PATH.BLOGS).expect(HTTP_STATUSES.OK_200);
 
-        const res = await req.get(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body[0].id)}`).expect(HTTP_STATUSES.OK_200);
+        // console.log(foundBlogs.body.items)
 
-        expect(foundBlogs.body[0].id).toEqual(res.body.id)
+        const res = await req.get(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body.items[0].id)}`).expect(HTTP_STATUSES.OK_200);
+        //
+        expect(foundBlogs.body.items[0].id).toEqual(res.body.id)
     });
 
     it('shouldn\'t get blog with incorrect id', async () => {
@@ -91,13 +93,12 @@ describe('/blogs', () => {
     it('should correct delete blog', async () => {
         const foundBlogs = await req.get(SETTINGS.PATH.BLOGS).expect(HTTP_STATUSES.OK_200);
 
-        await req.delete(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body[0].id)}`)
+        await req.delete(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body.items[0].id)}`)
             .set('Authorization', process.env.AUTH_HEADER || '')
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
-        const res = await req.get(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body[0].id)}`).expect(HTTP_STATUSES.NOT_FOUND_404)
+        const res = await req.get(`${SETTINGS.PATH.BLOGS}/${String(foundBlogs.body.items[0].id)}`).expect(HTTP_STATUSES.NOT_FOUND_404)
     });
-
     it('should correct update blog', async () => {
         const findBlogs = await req.get(SETTINGS.PATH.BLOGS);
 
@@ -107,7 +108,7 @@ describe('/blogs', () => {
             description: 'valid description',
         }
 
-        await req.put(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body[0].id)}`)
+        await req.put(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body.items[0].id)}`)
             .set('Authorization', process.env.AUTH_HEADER || '')
             .send(updateBlogs)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
@@ -117,11 +118,19 @@ describe('/blogs', () => {
     it('should correct delete vlog', async () => {
         const findBlogs = await req.get(SETTINGS.PATH.BLOGS);
 
-        await req.delete(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body[0].id)}`)
+        await req.delete(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body.items[0].id)}`)
             .set('Authorization', process.env.AUTH_HEADER || '')
             .expect(HTTP_STATUSES.NO_CONTENT_204);
 
-        await req.get(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body[0].id)}`).expect(HTTP_STATUSES.NOT_FOUND_404)
+        await req.get(`${SETTINGS.PATH.BLOGS}/${String(findBlogs.body.items[0].id)}`).expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 
+    it('should get errors with incorrect query params', async () => {
+        const foundBlogs = await req.get(`${SETTINGS.PATH.BLOGS}?sortBy=1&pageNumber=sr&pageSize=rt&SortDirection=ty`).expect(HTTP_STATUSES.BED_REQUEST_400);
+    });
+
+    it('should get blogs with correct query params', async () => {
+        const foundBlogs = await req.get(`${SETTINGS.PATH.BLOGS}?sortBy=name&pageNumber=2&pageSize=2&SortDirection=desc`).expect(HTTP_STATUSES.OK_200);
+
+    });
 })

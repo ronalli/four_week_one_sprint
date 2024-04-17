@@ -3,5 +3,10 @@ import {blogCollection} from "../db/mongo-db";
 import {ObjectId} from "mongodb";
 
 export const validatorParamBlogId = param("id")
-    .custom(value => !!blogCollection.find({_id: new ObjectId(value)}))
-    .withMessage('Blog ID is incorrect');
+    .custom(async value => {
+        const isValidBlogId = await blogCollection.findOne({_id: new ObjectId(value)});
+        if(!isValidBlogId) {
+            throw new Error('Field blogId is incorrect')
+        }
+        return true
+    })

@@ -59,12 +59,12 @@ describe('/posts', () => {
 
         const updatePost: BodyTypePost = {
             title: 'test 2',
-            blogId: findPosts.body[0].blogId,
+            blogId: findPosts.body.items[0].blogId,
             content: 'content 2',
             shortDescription: 'short description',
         }
 
-        const res = await req.put(`${SETTINGS.PATH.POSTS}/${findPosts.body[0].id}`)
+        const res = await req.put(`${SETTINGS.PATH.POSTS}/${findPosts.body.items[0].id}`)
             .set('Authorization', process.env.AUTH_HEADER || '')
             .send(updatePost)
             .expect(HTTP_STATUSES.NO_CONTENT_204)
@@ -74,11 +74,11 @@ describe('/posts', () => {
     it('should success delete post', async () => {
         const findPosts = await req.get(SETTINGS.PATH.POSTS);
 
-         await req.delete(`${SETTINGS.PATH.POSTS}/${findPosts.body[0].id}`)
+         await req.delete(`${SETTINGS.PATH.POSTS}/${findPosts.body.items[0].id}`)
             .set('Authorization', process.env.AUTH_HEADER || '')
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
-        await req.get(`${SETTINGS.PATH.POSTS}/${findPosts.body[0].id}`).expect(HTTP_STATUSES.NOT_FOUND_404)
+        await req.get(`${SETTINGS.PATH.POSTS}/${findPosts.body.items[0].id}`).expect(HTTP_STATUSES.NOT_FOUND_404)
 
     })
 

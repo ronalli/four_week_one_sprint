@@ -6,3 +6,11 @@ export type BlogOutputType = {
     createdAt: string,
     isMembership: boolean,
 }
+
+export type PaginatorBlog = {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: BlogOutputType[]
+}

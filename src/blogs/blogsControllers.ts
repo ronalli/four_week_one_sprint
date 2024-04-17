@@ -25,7 +25,9 @@ export const blogsControllers = {
         res.status(HTTP_STATUSES.NOT_FOUND_404).send({})
     },
     getBlogs: async (req: Request, res: Response) => {
+
         const queryParams: QueryType = req.query;
+
         const findBlogs = await blogsQueryRepositories.getAllBlogs(queryParams);
         return res.status(HTTP_STATUSES.OK_200).send(findBlogs)
     },
@@ -52,9 +54,9 @@ export const blogsControllers = {
         const {id} = req.params;
         const queryParams: QueryType = req.query;
 
-        const result = await blogsQueryRepositories. getAndSortPostsSpecialBlog(id, queryParams)
+        const result = await blogsQueryRepositories.getAndSortPostsSpecialBlog(id, queryParams)
 
-        res.send(result)
+        res.status(HTTP_STATUSES.OK_200).send(result)
     },
 
     createPostForSpecialBlog: async (req: Request, res: Response) => {

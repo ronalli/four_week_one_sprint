@@ -2,6 +2,7 @@ import {QueryType} from "../types/request-response-type";
 import {createDefaultValues} from "../utils/helper";
 import {blogCollection, postCollection} from "../db/mongo-db";
 import {formatingDataForOutputBlog, formatingDataForOutputPost} from "../utils/fromatingData";
+import {PaginatorBlog} from "../types/output-blog-type";
 
 
 export const blogsQueryRepositories = {
@@ -39,13 +40,11 @@ export const blogsQueryRepositories = {
 
         } catch (e) {
             console.log(e)
+            return []
         }
-
-        return true;
-
     },
 
-    getAllBlogs: async (queryParams: QueryType) => {
+    getAllBlogs: async (queryParams: QueryType): Promise<PaginatorBlog | []> => {
         const query = createDefaultValues(queryParams);
 
         const search = query.searchNameTerm ? {name: {$regex: query.searchNameTerm, $options: "i"}} : {}
@@ -73,8 +72,8 @@ export const blogsQueryRepositories = {
                 items: allBlogs.map(x => formatingDataForOutputBlog(x))
             }
         } catch (error) {
-            console.log(error);
+            console.log("22", error);
+            return [];
         }
-        return true;
     }
 }

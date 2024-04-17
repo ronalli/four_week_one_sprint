@@ -4,7 +4,7 @@ import {
     validationCreateBlog,
 } from "../middleware/input-validation-blog-middleware";
 import {authMiddleware} from "../middleware/auth-middleware";
-import {inputCheckErrorsMiddleware} from "../middleware/inputCheckErrorsMiddleware";
+import {inputCheckCorrectBlogIdMiddleware, inputCheckErrorsMiddleware} from "../middleware/inputCheckErrorsMiddleware";
 import {validationQueryParamsBlogs} from "../middleware/query-validator-middleware";
 import {validatorParamBlogId} from "../middleware/params-validator-middleware";
 import {validationCreateSpecialPost} from "../middleware/input-validation-post-middleware";
@@ -17,6 +17,17 @@ blogsRouter.post('/', authMiddleware, ...validationCreateBlog, inputCheckErrorsM
 blogsRouter.put('/:id', authMiddleware, ...validationCreateBlog, inputCheckErrorsMiddleware, blogsControllers.updateBlog)
 blogsRouter.delete('/:id', authMiddleware, blogsControllers.deleteBlog)
 
-blogsRouter.get('/:id/posts', validatorParamBlogId, ...validationQueryParamsBlogs, inputCheckErrorsMiddleware, blogsControllers.getAllPostsForBlog)
+blogsRouter.get('/:id/posts',
+    ...validationQueryParamsBlogs,
+    inputCheckErrorsMiddleware,
+    validatorParamBlogId,
+    inputCheckCorrectBlogIdMiddleware,
+    blogsControllers.getAllPostsForBlog)
 
-blogsRouter.post('/:id/posts', authMiddleware, ...validationCreateSpecialPost , inputCheckErrorsMiddleware, blogsControllers.createPostForSpecialBlog)
+blogsRouter.post('/:id/posts',
+    authMiddleware,
+    ...validationCreateSpecialPost,
+    inputCheckErrorsMiddleware,
+    validatorParamBlogId,
+    inputCheckCorrectBlogIdMiddleware,
+    blogsControllers.createPostForSpecialBlog)
